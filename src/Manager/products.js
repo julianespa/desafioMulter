@@ -29,11 +29,15 @@ class ProductManager{
             try {
                 let data = await fs.promises.readFile(pathToProducts,'utf-8')
                 let products = JSON.parse(data)
-                let product = products.find(product => product.id === id )
-                return {status:'success',payloas:product}
+                if(id > products.length) return {status:'error',error:'Invalid ID'}
+                let product = products.find(product => product.id == id )
+                return {status:'success',payload:product}
             } catch (error) {
                 return {status:'error', error:error}
             }
+        }
+        else {
+            return {status:'success',payload:[]}
         }
     }
 
@@ -79,8 +83,10 @@ class ProductManager{
             try {
                let data = await fs.promises.readFile(pathToProducts,'utf-8')
                let products = JSON.parse(data)
+               if(id > products.length) return {status:'error',error:'Invalid ID'}
                let newProducts = products.map((product)=>{
                    if(product.id == id) {
+                       updatedProduct.thumbnail = product.thumbnail
                        updatedProduct.id = id
                        return updatedProduct
                    } 
@@ -104,6 +110,7 @@ class ProductManager{
             try {
                 let data = await fs.promises.readFile(pathToProducts,'utf-8')
                 let products = JSON.parse(data)
+                if(id > products.length) return {status:'error',error:'Invalid ID'}
                 let newProducts = products.filter(product => product.id != id)
                 newProducts.map(product=>{
                     product.title = product.title
